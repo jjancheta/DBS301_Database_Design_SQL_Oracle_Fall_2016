@@ -1,0 +1,221 @@
+Name:  JESUS JR ANCHETA
+Course: DBS301SEE
+
+1. ****************** 
+SELECT 
+      E.LAST_NAME AS "EMPLOYEE",
+      M.LAST_NAME AS "MANAGER",
+      M.SALARY AS "MANAGER SALARY",
+      GRADE AS "MANAGER SALARY GRADE"
+FROM EMPLOYEES E JOIN EMPLOYEES M
+ON E.MANAGER_ID = M.EMPLOYEE_ID
+AND M.SALARY > 17000
+JOIN JOB_GRADES
+ON M.SALARY BETWEEN LOWEST_SAL AND HIGHEST_SAL;
+
+EMPLOYEE                  MANAGER                   MANAGER SALARY MANAGER SALARY GRADE
+------------------------- ------------------------- -------------- --------------------
+Kochhar                   King                               24000 E                    
+De Haan                   King                               24000 E                    
+Mourgos                   King                               24000 E                    
+Zlotkey                   King                               24000 E                    
+Hartstein                 King                               24000 E                    
+Ancheta                   King                               24000 E           
+
+
+
+2.**********************
+SELECT
+    JOB_ID,
+    COUNT(EMPLOYEE_ID) AS "# OF EMPLOYEE"
+FROM EMPLOYEES JOIN DEPARTMENTS USING (DEPARTMENT_ID) 
+GROUP BY JOB_ID, DEPARTMENT_NAME
+HAVING UPPER(DEPARTMENT_NAME) IN ('ADMINISTRATION', 'EXECUTIVE')
+ORDER BY 2 DESC;
+
+JOB_ID     # OF EMPLOYEE
+---------- -------------
+AD_VP                  2 
+AD_ASST                1 
+AD_PRES                1 
+IT_PROG                1 
+
+
+
+3. ********************
+SELECT
+    DISTINCT(JOB_ID)
+FROM EMPLOYEES
+WHERE DEPARTMENT_ID IN (10,20);
+
+JOB_ID   
+----------
+AD_ASST    
+MK_MAN     
+MK_REP 
+
+
+
+4.************************
+SELECT
+  DEPARTMENT_NAME,
+  LOCATION_ID,
+  LAST_NAME,
+  JOB_ID,
+  SALARY
+FROM DEPARTMENTS JOIN EMPLOYEES USING(DEPARTMENT_ID)
+WHERE LOCATION_ID = &LOCATION_ID;
+
+DEPARTMENT_NAME                LOCATION_ID LAST_NAME                 JOB_ID         SALARY
+------------------------------ ----------- ------------------------- ---------- ----------
+Marketing                             1800 Hartstein                 MK_MAN          13000 
+Marketing                             1800 Fay                       MK_REP           6000 
+
+
+
+
+5.**************************
+SELECT
+    LAST_NAME,
+    SALARY,
+    CASE 
+         WHEN COMMISSION_PCT IS NULL THEN 'No'
+         ELSE 'Yes'
+    END AS "Commission"
+FROM EMPLOYEES;   
+
+LAST_NAME                     SALARY Commission
+------------------------- ---------- ----------
+King                           24000 No         
+Kochhar                        17000 No         
+De Haan                        17000 No         
+Hunold                          9000 No         
+Ernst                           6000 No         
+Lorentz                         4200 No         
+Mourgos                         5800 No         
+Rajs                            3500 No         
+Davies                          3100 No         
+Matos                           2500 No         
+Vargas                          2500 No         
+Zlotkey                        10500 Yes        
+Abel                           11000 Yes        
+Taylor                          8600 Yes        
+Grant                           7000 Yes        
+Whalen                          2500 No         
+Hartstein                      13000 No         
+Fay                             6000 No         
+Higgins                        12000 No         
+Gietz                           8300 No         
+Ancheta                              Yes        
+
+
+
+
+6.***************************
+SELECT
+    DEPARTMENT_ID,
+    DEPARTMENT_NAME,
+    COUNT(EMPLOYEE_ID) AS "# OF EMPLOYEE"
+FROM DEPARTMENTS LEFT JOIN EMPLOYEES USING(DEPARTMENT_ID)
+GROUP BY DEPARTMENT_ID, DEPARTMENT_NAME
+HAVING COUNT(EMPLOYEE_ID) < 3;
+
+
+DEPARTMENT_ID DEPARTMENT_NAME                # OF EMPLOYEE
+------------- ------------------------------ -------------
+           10 Administration                             1 
+          110 Accounting                                 2 
+          190 Contracting                                0 
+           20 Marketing                                  2 
+
+
+
+
+7.**********************************
+ ERROR WITH QUESTION
+
+
+
+
+
+8.************************
+SELECT
+    LAST_NAME,
+    TO_CHAR(HIRE_DATE,'fmMonth DD') AS "ANNIVERSARY"
+FROM EMPLOYEES    
+ORDER BY TO_CHAR(HIRE_DATE,'MM'),TO_CHAR(HIRE_DATE,'DD');
+
+LAST_NAME                 ANNIVERSARY
+------------------------- ------------
+Hunold                    January 3    
+De Haan                   January 13   
+Zlotkey                   January 29   
+Davies                    January 29   
+Lorentz                   February 7   
+Hartstein                 February 17  
+Matos                     March 15     
+Taylor                    March 24     
+Abel                      May 11       
+Ernst                     May 21       
+Grant                     May 24       
+Gietz                     June 7       
+Higgins                   June 7       
+King                      June 17      
+Vargas                    July 9       
+Fay                       August 17    
+Whalen                    September 17 
+Kochhar                   September 21 
+Ancheta                   October 1    
+Rajs                      October 17   
+Mourgos                   November 16  
+
+
+
+
+9.******************************
+SELECT
+    EMPLOYEE_ID,
+    LAST_NAME,
+    JOB_ID,
+    CASE  WHEN UPPER(JOB_ID) LIKE '%VP%' THEN  SALARY * 1.3
+          ELSE SALARY * 1.2
+    END AS "NEW SALARY"      
+FROM EMPLOYEES
+WHERE SALARY BETWEEN 6000 AND 11000
+AND (UPPER(JOB_ID) LIKE '%VP%' 
+OR  UPPER(JOB_ID) LIKE '%MAN%' 
+OR   UPPER(JOB_ID) LIKE '%MGR%')
+ORDER BY SALARY DESC, LAST_NAME;
+
+
+EMPLOYEE_ID LAST_NAME                 JOB_ID     NEW SALARY
+----------- ------------------------- ---------- ----------
+        149 Zlotkey                   SA_MAN          12600 
+
+
+
+
+
+10.****************************
+SELECT
+  DEPARTMENT_ID,
+  DEPARTMENT_NAME,
+  CASE WHEN LOCATION_ID IS NULL THEN TO_CHAR('Not Assigned')
+       ELSE CITY
+  END AS "CITY"    
+FROM DEPARTMENTS LEFT JOIN LOCATIONS USING(LOCATION_ID)
+ORDER BY 2;
+
+
+DEPARTMENT_ID DEPARTMENT_NAME                CITY                         
+------------- ------------------------------ ------------------------------
+          110 Accounting                     Seattle                        
+           10 Administration                 Seattle                        
+          190 Contracting                    Seattle                        
+           90 Executive                      Seattle                        
+           60 IT                             Southlake                      
+           20 Marketing                      Toronto                        
+           80 Sales                          Oxford                         
+           50 Shipping                       South San Francisco            
+
+
